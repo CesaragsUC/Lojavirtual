@@ -1,0 +1,9 @@
+﻿@model LojaVirtual.Models.ViewModel.Pages.PaginaVM
+
+@{
+    ViewBag.Title = ViewBag.TituloPagina;
+
+    TempData["TituloPagina"] = ViewBag.TituloPagina;
+}
+
+@Html.Raw(Model.Corpo)

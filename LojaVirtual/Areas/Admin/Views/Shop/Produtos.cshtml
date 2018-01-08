@@ -1,0 +1,111 @@
+﻿@model IEnumerable<LojaVirtual.Models.ViewModel.Shop.ProdutoVM>
+
+@{
+    ViewBag.Title = "Produtos";
+}
+@using PagedList.Mvc; 
+@using PagedList;
+<h2>Produtos</h2>
+
+<select id="SelectedCategoria" name="SelectedCategoria">
+    <option value="0">Todos</option>
+    @foreach (var item in ViewBag.Categoria)
+    {
+        if(ViewBag.SelectedCategoria == item.Value)
+        {
+            <option selected="selected" value="@item.Value">@item.Text</option>
+        }
+        else
+        {
+            <option  value="@item.Value">@item.Text</option>
+        }
+
+    }
+</select>
+<br /><br />
+<p>
+    @Html.ActionLink("Adicionar novo produto", "AddProduto")
+</p>
+<br />
+<table class="table">
+    <tr>
+        <th>
+           Nome
+        </th>
+        <th>
+          Descricao
+        </th>
+        <th>
+            Nome Imagem
+        </th>
+        <th>
+            Preco
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var product in ViewBag.onPaginadeProdutos)
+    {
+       
+        <tr>
+            <td>
+                @product.Nome
+            </td>
+            <td>
+                @product.Descricao
+            </td>
+            <td>
+                <a href="/admin/shop/EditarProduto/@product.Id">
+                <img src="/Images/Uploads/Produto/@product.Id/Thumbs/@product.ImagemNome"  />
+                </a>
+              
+            </td>
+            <td>
+                
+                @product.Preco
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditarProduto", new { id = product.Id }) |
+                @Html.ActionLink("Delete", "DeletarProduto", new { id = product.Id }, new { @class="delete"})
+            </td>
+        </tr>
+    }
+
+
+</table>
+
+
+@Html.PagedListPager((IPagedList)ViewBag.onPaginadeProdutos, pagina => Url.Action("Produtos", new { pagina, catId = ViewBag.SelectedCategoria }))
+
+@section Scripts{
+
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
+    <script>
+
+   $(function () {
+
+       //Seleciona por categoria especifica
+       $("#SelectedCategoria").on("change", function () {
+
+           var url = $(this).val();
+           if (url) {
+               window.location = "/admin/shop/Produtos?catId=" + url;
+               return false;
+           }
+        });
+
+
+            // confirma deletar  produto
+            $("a.delete").click(function () {
+
+                if (!confirm("Confirmar exclusão"))
+                    return false;
+            });
+
+
+    });
+
+    </script>
+
+
+}

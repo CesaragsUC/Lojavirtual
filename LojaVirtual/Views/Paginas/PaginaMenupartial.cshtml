@@ -1,0 +1,18 @@
+﻿@model IEnumerable<LojaVirtual.Models.ViewModel.Pages.PaginaVM>
+
+
+@{ 
+    string tempTituloPagina = (string)TempData["TituloPagina"];
+}
+
+@foreach (var item in Model) {
+
+    if (tempTituloPagina == item.Titulo)
+    {
+        <li class="active"><a href="/@item.Slug">@item.Titulo</a></li>
+    }
+    else
+    {
+        <li><a href="/@item.Slug">@item.Titulo</a></li>
+    }
+}

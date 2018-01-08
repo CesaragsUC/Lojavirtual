@@ -1,0 +1,44 @@
+﻿@model LojaVirtual.Models.ViewModel.Pages.PaginaVM
+
+@{
+    ViewBag.Title = "Detalhes Pagina";
+}
+
+<h2>Detalhes Pagina</h2>
+
+<div>
+    <h4>PaginaVM</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Titulo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Titulo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Corpo)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Corpo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Slug)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Slug)
+        </dd>
+
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "EditarPagina", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

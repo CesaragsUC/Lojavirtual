@@ -1,0 +1,99 @@
+﻿@model IEnumerable<LojaVirtual.Models.ViewModel.Pages.PaginaVM>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "AddPagina")
+</p>
+@if (!Model.Any())
+{
+    <h1 class="text-center">Não há páginas</h1>
+}
+else
+{
+<table class="table sorting" id="paginas">
+    <tr class="home">
+        <th>
+           Titulo
+        </th>
+
+        <th>
+           Slug
+        </th>
+        <th>
+         HasSidebar
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr id="id_@item.Id" class="@item.Slug">
+        <td>
+            @Html.DisplayFor(modelItem => item.Titulo)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Slug)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HasSidebar)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditarPagina", new { id = item.Id }) |
+            @Html.ActionLink("Details", "DetalhesPagina", new { id = item.Id }) |
+            @if (item.Slug != "home")
+            {
+                @Html.ActionLink("Delete", "DeletarPagina", new { id = item.Id }, new { @class="delete"})
+            }
+            
+        </td>
+    </tr>
+
+}
+    
+
+</table>
+}
+
+@section Scripts{
+
+ <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
+  <script>
+       
+   $(function () {
+
+            $("a.delete").click(function () {
+
+                if (!confirm("Confirmar exclusão"))
+                    return false;
+            });
+
+
+
+            $("table#paginas tbody").sortable({
+
+                items: "tr:not(.home)",
+                placeholder: "ui-state-highlight",
+                update: function () {
+
+                    var ids = $("table#paginas tbody").sortable("serialize");
+                    var url = "/Admin/Pages/ReorderPages";
+
+                    $.post(url.ids, function (data) {
+
+
+                    });
+                }
+            });
+    });
+
+   </script>
+
+
+}

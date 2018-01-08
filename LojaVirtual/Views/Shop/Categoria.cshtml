@@ -1,0 +1,51 @@
+﻿@model IEnumerable<LojaVirtual.Models.ViewModel.Shop.ProdutoVM>
+
+@{
+    ViewBag.Title = ViewBag.CategoriaNome;
+}
+
+
+
+<table class="table">
+    <tr>
+        <th>
+          Nome
+        </th>
+        <th>
+          Descrição
+        </th>
+        <th>
+           Imagem Nome
+        </th>
+        <th>
+          Preço
+        </th>
+
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nome)
+        </td>
+        <td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descricao)
+        </td>
+        <td>
+           <a href="/shop/produtos-detalhes/@item.Slug">
+               <img src="/Images/Uploads/Produto/@item.Id/Thumbs/@item.ImagemNome" />
+           </a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Preco)
+        </td>
+        <td>
+            <a href="/shop/produtos-detalhes/@item.Slug"></a>
+        </td>
+    </tr>
+}
+
+</table>

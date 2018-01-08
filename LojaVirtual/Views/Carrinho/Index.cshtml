@@ -1,0 +1,199 @@
+﻿@model IEnumerable<LojaVirtual.Models.ViewModel.Carrinho.CarrinhoVM>
+
+@{
+    ViewBag.Title = "Detalhes do carrinho";
+}
+
+<h2>Detalhes Carrinho</h2>
+
+@if (ViewBag.Mensagem != null)
+{
+    <h3>@ViewBag.Mensagem</h3>
+}
+else
+{
+<table class="table">
+    <tr>
+        <th>
+            Nome
+        </th>
+        <th>
+            Quantidade
+        </th>
+        <th>
+           Preco
+        </th>
+        <th>
+           Imagem
+        </th>
+        <th>
+           
+        </th>
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProdutoNome)
+        </td>
+        <td class=" qtd@(item.ProdutoId)">
+            @Html.DisplayFor(modelItem => item.Quantidade)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Preco)
+        </td>
+        <td>
+            <img src="/Images/Uploads/Produto/@item.ProdutoId/Thumbs/@item.Imagem" />
+        </td>
+
+        <td>
+            <a href="#" class="incrementaproduto" data-id="@item.ProdutoId">+</a>
+            <a href="#" class="decrementaproduto" data-id="@item.ProdutoId">-</a>
+            <a href="#" class="removeaproduto" data-id="@item.ProdutoId">Remover</a>
+        </td>
+
+        <td class="total@(item.ProdutoId)">
+           $@Html.DisplayFor(modelItem => item.Total)
+        </td>
+
+    </tr>
+}
+       <tr>
+        <td> </td>
+        <td> </td>
+        <td> </td>
+        <td> </td>
+        <td class="totalgeral"><b>Total Geral </b>R$ <span>@ViewBag.TotalGeral</span> </td>
+       </tr>
+</table>
+}
+@section Scripts {
+    <script>
+
+        $(function () {
+
+            /*
+            * Incrementa produto
+            */
+
+            $("a.incrementaproduto").click(function (e) {
+                e.preventDefault();
+
+                var produtoId = $(this).data("id");
+                var url = "/carrinho/IncrementaProduto";
+
+                $.getJSON(url, { produtoId: produtoId }, function (data) {
+
+                    $("td.qtd" + produtoId).html(data.qtd);
+
+                    var preco = data.qtd * data.preco;
+                    var priceHtml = "$" + preco.toFixed(2);
+
+                    $("td.total" + produtoId).html(priceHtml);
+
+                    var gt = parseFloat($("td.totalgeral span").text());
+                    var totalgeral = (gt + data.preco).toFixed(2);
+
+                    $("td.totalgeral span").text(totalgeral);
+                }).done(function (data) {
+                    var url2 = "/carrinho/PaypalPartial";
+
+                    $.get(url2, {}, function (data) {
+                        $('div.paypaldiv').html(data);
+                    });
+                });
+            });
+
+            //////////////////////////////////////////////////////////////
+
+            /*
+            * Decrementa produto
+            */
+
+            $("a.decrementaproduto").click(function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+                var productId = $(this).data("id");
+                var url = "/carrinho/DecrementaProduto";
+
+                $.getJSON(url, { productId: productId }, function (data) {
+                    if (data.qty == 0) {
+                        $this.parent().parent().fadeOut("fast", function () {
+                            location.reload();
+                        });
+                    }
+                    else {
+                        $("td.qtd" + productId).html(data.qty);
+
+                        var price = data.qty * data.price;
+                        var priceHtml = "$" + price.toFixed(2);
+
+                        $("td.total" + productId).html(priceHtml);
+
+                        var gt = parseFloat($("td.totalgeral span").text());
+                        var grandtotal = (gt - data.price).toFixed(2);
+
+                        $("td.totalgeral span").text(grandtotal);
+                    }
+
+                }).done(function (data) {
+                    var url2 = "/carrinho/PaypalPartial";
+
+                    $.get(url2, {}, function (data) {
+                        $('div.paypaldiv').html(data);
+                    });
+                });
+            });
+
+            //////////////////////////////////////////////////////////////
+
+            /*
+            * Remove produto
+            */
+
+            $("a.removeaproduto").click(function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+                var productId = $(this).data("id");
+                var url = "/carrinho/RemoveProduto";
+
+                $.get(url, { productId: productId }, function (data) {
+                    location.reload();
+                });
+            });
+
+            //////////////////////////////////////////////////////////////
+
+            /*
+            * Place pedido
+            */
+
+            $("a.placeorder").click(function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+
+                var url = "/carrinho/PlaceOrder";
+
+                $(".ajaxbg").show();
+
+                $.post(url, {}, function (data) {
+                    $(".ajaxbg span").text("Thank you. You will now be redirected to paypal.");
+                    setTimeout(function () {
+                        $('form input[name="submit"]').click();
+                    }, 2000);
+                });
+            });
+
+            //////////////////////////////////////////////////////////////
+
+        });
+
+    </script>
+
+}
