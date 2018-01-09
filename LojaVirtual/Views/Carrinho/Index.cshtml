@@ -117,27 +117,27 @@ else
                 e.preventDefault();
 
                 var $this = $(this);
-                var productId = $(this).data("id");
+                var produtoId = $(this).data("id");
                 var url = "/carrinho/DecrementaProduto";
 
-                $.getJSON(url, { productId: productId }, function (data) {
-                    if (data.qty == 0) {
+                $.getJSON(url, { produtoId: produtoId }, function (data) {
+                    if (data.qtd == 0) {
                         $this.parent().parent().fadeOut("fast", function () {
                             location.reload();
                         });
                     }
                     else {
-                        $("td.qtd" + productId).html(data.qty);
+                        $("td.qtd" + produtoId).html(data.qtd);
 
-                        var price = data.qty * data.price;
-                        var priceHtml = "$" + price.toFixed(2);
+                        var preco = data.qtd * data.preco;
+                        var priceHtml = "$" + preco.toFixed(2);
 
-                        $("td.total" + productId).html(priceHtml);
+                        $("td.total" + produtoId).html(priceHtml);
 
                         var gt = parseFloat($("td.totalgeral span").text());
-                        var grandtotal = (gt - data.price).toFixed(2);
+                        var totalgeral = (gt - data.preco).toFixed(2);
 
-                        $("td.totalgeral span").text(grandtotal);
+                        $("td.totalgeral span").text(totalgeral);
                     }
 
                 }).done(function (data) {
@@ -159,10 +159,10 @@ else
                 e.preventDefault();
 
                 var $this = $(this);
-                var productId = $(this).data("id");
+                var produtoId = $(this).data("id");
                 var url = "/carrinho/RemoveProduto";
 
-                $.get(url, { productId: productId }, function (data) {
+                $.get(url, { produtoId: produtoId }, function (data) {
                     location.reload();
                 });
             });

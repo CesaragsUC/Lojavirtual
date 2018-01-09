@@ -132,5 +132,51 @@ namespace LojaVirtual.Controllers
             }
 
         }
+
+        public ActionResult DecrementaProduto(int produtoId)
+        {
+            // Init cart
+            List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
+
+            using (Db db = new Db())
+            {
+                // Get model from list
+                CarrinhoVM model = cart.FirstOrDefault(x => x.ProdutoId == produtoId);
+
+                // Decrement qty
+                if (model.Quantidade > 1)
+                {
+                    model.Quantidade--;
+                }
+                else
+                {
+                    model.Quantidade = 0;
+                    cart.Remove(model);
+                }
+
+                // Store needed data
+                var resultado = new { qtd = model.Quantidade, preco = model.Preco };
+
+                // Return json
+                return Json(resultado, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+        public void RemoveProduto(int produtoId)
+        {
+            // Init cart list
+            List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
+
+            using (Db db = new Db())
+            {
+                // Get model from list
+                CarrinhoVM model = cart.FirstOrDefault(x => x.ProdutoId == produtoId);
+
+                // Remove model from list
+                cart.Remove(model);
+            }
+
+        }
+
     }
 }
