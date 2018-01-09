@@ -13,6 +13,7 @@ namespace LojaVirtual
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapRoute("Conta", "Conta/{action}/{id}", new { controller = "Conta", action = "Index", id = UrlParameter.Optional }, new[] { "LojaVirtual.Controllers" });
             routes.MapRoute("Carrinho", "Carrinho/{action}/{id}", new { controller = "Carrinho", action = "Index",id = UrlParameter.Optional }, new[] { "LojaVirtual.Controllers" });
             routes.MapRoute("Shop", "Shop/{action}/{name}", new { controller = "Shop", action = "Index", name= UrlParameter.Optional }, new[] { "LojaVirtual.Controllers" });
             routes.MapRoute("Sidebarpartial", "Paginas/Sidebarpartial", new { controller = "Paginas", action = "Sidebarpartial" }, new[] { "LojaVirtual.Controllers" });

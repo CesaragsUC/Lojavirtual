@@ -13,6 +13,9 @@ namespace LojaVirtual.Models.Data
         public DbSet<SidebarDTO> Sidebar { get; set; }
         public DbSet<CategoriaDTO> Categoria { get; set; }
         public DbSet<ProdutoDTO> Produto { get; set; }
+        public DbSet<UsuarioDTO> Usuario { get; set; }
+        public DbSet<RegrasDTO> Regras { get; set; }
+        public DbSet<RegraUsuarioDTO> RegraUsuario { get; set; }
 
         public System.Data.Entity.DbSet<LojaVirtual.Models.ViewModel.Pages.PaginaVM> PaginaVMs { get; set; }
 
@@ -23,5 +26,7 @@ namespace LojaVirtual.Models.Data
         public System.Data.Entity.DbSet<LojaVirtual.Models.ViewModel.Shop.ProdutoVM> ProdutoVMs { get; set; }
 
         public System.Data.Entity.DbSet<LojaVirtual.Models.ViewModel.Carrinho.CarrinhoVM> CarrinhoVMs { get; set; }
+
+        public System.Data.Entity.DbSet<LojaVirtual.Models.ViewModel.Account.UsuarioVM> UsuarioVMs { get; set; }
     }
 }

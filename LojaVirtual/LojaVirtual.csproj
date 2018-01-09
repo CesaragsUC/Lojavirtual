@@ -159,6 +159,7 @@
     <Compile Include="Areas\Admin\Controllers\PagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ShopController.cs" />
     <Compile Include="Controllers\CarrinhoController.cs" />
+    <Compile Include="Controllers\ContaController.cs" />
     <Compile Include="Controllers\PaginasController.cs" />
     <Compile Include="Controllers\ShopController.cs" />
     <Compile Include="Global.asax.cs">
@@ -168,7 +169,11 @@
     <Compile Include="Models\Data\Db.cs" />
     <Compile Include="Models\Data\PaginaDTO.cs" />
     <Compile Include="Models\Data\ProdutoDTO.cs" />
+    <Compile Include="Models\Data\RegrasDTO.cs" />
+    <Compile Include="Models\Data\RegraUsuarioDTO.cs" />
     <Compile Include="Models\Data\SidebarDTO.cs" />
+    <Compile Include="Models\Data\UsuarioDTO.cs" />
+    <Compile Include="Models\ViewModel\Account\UsuarioVM.cs" />
     <Compile Include="Models\ViewModel\Carrinho\CarrinhoVM.cs" />
     <Compile Include="Models\ViewModel\Pages\PaginaVM.cs" />
     <Compile Include="Models\ViewModel\Pages\SidebarVM.cs" />
@@ -907,6 +912,7 @@
     <Content Include="Views\Carrinho\CarrinhoPartial.cshtml" />
     <Content Include="Views\Carrinho\Index.cshtml" />
     <Content Include="Views\Carrinho\AddAoCarrinhoPartial.cshtml" />
+    <Content Include="Views\Conta\CriaConta.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
