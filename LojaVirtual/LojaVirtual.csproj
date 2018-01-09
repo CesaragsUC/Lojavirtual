@@ -173,6 +173,8 @@
     <Compile Include="Models\Data\RegraUsuarioDTO.cs" />
     <Compile Include="Models\Data\SidebarDTO.cs" />
     <Compile Include="Models\Data\UsuarioDTO.cs" />
+    <Compile Include="Models\ViewModel\Account\LoginUsuarioVM.cs" />
+    <Compile Include="Models\ViewModel\Account\UsuarioNavPartial.cs" />
     <Compile Include="Models\ViewModel\Account\UsuarioVM.cs" />
     <Compile Include="Models\ViewModel\Carrinho\CarrinhoVM.cs" />
     <Compile Include="Models\ViewModel\Pages\PaginaVM.cs" />
@@ -913,6 +915,8 @@
     <Content Include="Views\Carrinho\Index.cshtml" />
     <Content Include="Views\Carrinho\AddAoCarrinhoPartial.cshtml" />
     <Content Include="Views\Conta\CriaConta.cshtml" />
+    <Content Include="Views\Conta\Login.cshtml" />
+    <Content Include="Views\Conta\UsuarionavPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />

@@ -21,6 +21,27 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                         @Html.Action("PaginaMenupartial", "Paginas")
+                    @if(Request.IsAuthenticated)
+                    {
+                        <li><a href="/conta/logout">Sair</a></li>
+                    }
+                    else
+                    {
+                        if (ViewBag.Tile == "Login")
+                        {
+                            <li class="active"><a href="/conta/login">Entrar</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="/conta/login">Entrar</a></li>
+                        }
+
+                    }
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>@Html.Action("UsuarioNavPartial","Conta", new { area=""})</li>
+                    }
+
                 </ul>
                 <ul class="navbar-collapse collapse navbar-right"  >
                     @Html.Action("CarrinhoPartial", "Carrinho")
