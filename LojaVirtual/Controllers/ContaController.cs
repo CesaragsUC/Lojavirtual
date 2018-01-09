@@ -20,6 +20,12 @@ namespace LojaVirtual.Controllers
         [HttpGet]
         public ActionResult Login()
         {
+            string usuarionome = User.Identity.Name;
+
+            if (!string.IsNullOrEmpty(usuarionome))
+            {
+                return RedirectToAction("usuario-perfil");
+            }
             return View();
         }
 
@@ -155,6 +161,79 @@ namespace LojaVirtual.Controllers
 
             // Return partial view with model
             return PartialView(model);
+        }
+
+
+        [HttpGet]
+        [ActionName("usuario-perfil")]
+        public ActionResult UsuarioProfile()
+        {
+
+
+            string username = User.Identity.Name;
+
+            UsuarioProfileVM model;
+
+            using (Db db = new Db())
+            {
+                UsuarioDTO dto = db.Usuario.FirstOrDefault(x => x.Login == username);
+
+                model = new UsuarioProfileVM(dto);
+
+            }
+
+            return View("UsuarioProfile", model);
+        }
+
+
+        [HttpPost]
+        [ActionName("usuario-perfil")]
+        public ActionResult UsuarioProfile(UsuarioProfileVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("UsuarioProfile", model);
+            }
+
+            if (!string.IsNullOrEmpty(model.Senha))
+            {
+                if (!model.Senha.Equals(model.ConfirmarSenha))
+                {
+                    ModelState.AddModelError("","Senhas não são iguais.");
+                    return View("UsuarioProfile", model);
+                }
+            }
+
+            using (Db db = new Db())
+            {
+                string username = User.Identity.Name;
+
+                if(db.Usuario.Where(x => x.Id !=  model.Id).Any(x => x.Login == username))
+                {
+                    ModelState.AddModelError("","Login " + model.Login + " já existe.");
+                    model.Login = "";
+
+                    return View("UsuarioProfile",model);
+                }
+
+                UsuarioDTO dto = db.Usuario.Find(model.Id);
+                dto.PrimeiroNome = model.PrimeiroNome;
+                dto.SegundoNome = model.SegundoNome;
+                dto.Email = model.Email;
+                dto.Login = model.Login;
+
+                if (!string .IsNullOrEmpty(model.Senha))
+                {
+                    dto.Senha = model.Senha;
+                }
+
+                db.SaveChanges();
+
+            }
+
+            TempData["SM"] = "Perfil editado com sucesso!";
+
+            return Redirect("~/conta/usuario-perfil");
         }
     }
 }
