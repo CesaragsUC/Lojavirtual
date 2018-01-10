@@ -167,7 +167,9 @@
     </Compile>
     <Compile Include="Models\Data\CategoriaDTO.cs" />
     <Compile Include="Models\Data\Db.cs" />
+    <Compile Include="Models\Data\DetalhePedidoDTO.cs" />
     <Compile Include="Models\Data\PaginaDTO.cs" />
+    <Compile Include="Models\Data\PedidoDTO.cs" />
     <Compile Include="Models\Data\ProdutoDTO.cs" />
     <Compile Include="Models\Data\RegrasDTO.cs" />
     <Compile Include="Models\Data\RegraUsuarioDTO.cs" />
@@ -919,6 +921,7 @@
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Conta\UsuarionavPartial.cshtml" />
     <Content Include="Views\Conta\UsuarioProfile.cshtml" />
+    <Content Include="Views\Carrinho\PaypalPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />

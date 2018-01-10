@@ -16,6 +16,8 @@ namespace LojaVirtual.Models.Data
         public DbSet<UsuarioDTO> Usuario { get; set; }
         public DbSet<RegrasDTO> Regras { get; set; }
         public DbSet<RegraUsuarioDTO> RegraUsuario { get; set; }
+        public DbSet<PedidoDTO> Pedido { get; set; }
+        public DbSet<DetalhePedidoDTO> PedidoDetalhes { get; set; }
 
         public System.Data.Entity.DbSet<LojaVirtual.Models.ViewModel.Pages.PaginaVM> PaginaVMs { get; set; }
 

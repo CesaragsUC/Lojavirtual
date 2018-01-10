@@ -178,5 +178,12 @@ namespace LojaVirtual.Controllers
 
         }
 
+        public ActionResult PaypalPartial()
+        {
+            List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
+
+            return PartialView(cart);
+        }
+
     }
 }
