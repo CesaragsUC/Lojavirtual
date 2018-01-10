@@ -20,8 +20,8 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                        @Html.Action("PaginaMenupartial", "Paginas")
-                    @if(Request.IsAuthenticated)
+                    @Html.Action("PaginaMenupartial", "Paginas")
+                    @if (Request.IsAuthenticated)
                     {
                         <li><a href="/conta/logout">Sair</a></li>
                     }
@@ -37,15 +37,38 @@
                         }
 
                     }
-                    @if (Request.IsAuthenticated)
+                    @if (Request.IsAuthenticated && User.IsInRole("User"))
                     {
-                        <li>@Html.Action("UsuarioNavPartial","Conta", new { area=""})</li>
+                  
+
+                        if (ViewBag.Title == "Usuario Profile")
+                        {
+                            <li class="active">@Html.Action("UsuarioNavPartial", "Conta", new { area = "" })</li>
+                        }
+                        else
+                        {
+                            <li>@Html.Action("UsuarioNavPartial", "Conta", new { area = "" })</li>
+                        }
+
+
                     }
 
                 </ul>
-                <ul class="navbar-collapse collapse navbar-right"  >
-                    @Html.Action("CarrinhoPartial", "Carrinho")
-                </ul>
+                @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <ul class="navbar-collapse collapse navbar-right adminarea">
+                        <li>@Html.ActionLink("Area Admin", "Index", "Dashboard", new { area = "Admin" }, null) </li>
+                    </ul>
+                }
+                else
+                {
+                    if (ViewBag.Title != "carrinho detalhes")
+                    {
+                        <ul class="navbar-collapse collapse navbar-right">
+                            @Html.Action("CarrinhoPartial", "Carrinho")
+                        </ul>
+                    }
+                }
             </div>
         </div>
     </div>
