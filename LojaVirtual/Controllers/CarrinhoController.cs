@@ -3,6 +3,8 @@ using LojaVirtual.Models.ViewModel.Carrinho;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -184,6 +186,120 @@ namespace LojaVirtual.Controllers
 
             return PartialView(cart);
         }
+
+        // POST: /Cart/PlaceOrder
+        [HttpPost]
+        public void PlaceOrder()
+        {
+            // Get cart list
+            List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
+
+            // Get username
+            string username = User.Identity.Name;
+
+            int orderId = 0;
+
+            using (Db db = new Db())
+            {
+                // Init OrderDTO
+                PedidoDTO orderDTO = new PedidoDTO();
+
+                // Get user id
+                var q = db.Usuario.FirstOrDefault(x => x.Login == username);
+                int userId = q.Id;
+
+                // Add to OrderDTO and save
+                orderDTO.UsuarioId = userId;
+                orderDTO.DataCriacao = DateTime.Now;
+
+                db.Pedido.Add(orderDTO);
+
+                db.SaveChanges();
+
+                // Get inserted id
+                orderId = orderDTO.PedidoId;
+
+                // Init OrderDetailsDTO
+                DetalhePedidoDTO orderDetailsDTO = new DetalhePedidoDTO();
+
+                // Add to OrderDetailsDTO
+                foreach (var item in cart)
+                {
+                    orderDetailsDTO.PedidoId = orderId;
+                    orderDetailsDTO.UsuarioId = userId;
+                    orderDetailsDTO.ProdutoId = item.ProdutoId;
+                    orderDetailsDTO.Quantidade = item.Quantidade;
+
+                    db.PedidoDetalhes.Add(orderDetailsDTO);
+
+                    db.SaveChanges();
+                }
+            }
+
+              var client = new SmtpClient("smtp-mail.outlook.com", 587)
+              {
+                  Credentials = new NetworkCredential("cesar_ags@outlook.com", "Nvidia770"),
+                  EnableSsl = true
+              };
+              client.Send("cesar_ags@outlook.com", "cesar_ags@outlook.com", "New Order", "You have a new order. Order number " + orderId);
+
+              // Reset session
+              Session["carrinho"] = null;
+        }
+
+        //[HttpPost]
+        //public void PlaceOrder()
+        //{
+        //    List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
+
+        //        string username = User.Identity.Name;
+        //        int pedidoId = 0;
+
+        //        using (Db db = new Db())
+        //        {
+        //            PedidoDTO pedidoDTO = new PedidoDTO();
+
+        //            var q = db.Usuario.FirstOrDefault(x => x.Login == username);
+        //            int usuarioId = q.Id;
+
+
+        //            pedidoDTO.UsuarioId = usuarioId;
+        //            pedidoDTO.DataCriacao = DateTime.Now;
+
+        //            db.Pedido.Add(pedidoDTO);
+
+        //            db.SaveChanges();
+
+        //            pedidoId = pedidoDTO.PedidoId;
+
+
+        //            DetalhePedidoDTO pedidoDetalhesDTO = new DetalhePedidoDTO();
+
+        //            foreach (var item in cart)
+        //            {
+        //                pedidoDetalhesDTO.PedidoId = pedidoId;
+        //                pedidoDetalhesDTO.UsuarioId = usuarioId;
+        //                pedidoDetalhesDTO.ProdutoId = item.ProdutoId;
+        //                pedidoDetalhesDTO.Quantidade = item.Quantidade;
+
+        //                db.PedidoDetalhes.Add(pedidoDetalhesDTO);
+        //                db.SaveChanges();
+
+        //            }
+        //        }
+
+        //    var client = new SmtpClient("smtp-mail.outlook.com", 587)
+        //    {
+        //        Credentials = new NetworkCredential("cesar_ags@outlook.com", "Nvidia770"),
+        //        EnableSsl = true
+        //    };
+        //    client.Send("cesar_ags@outlook.com", "cesar_ags@outlook.com", "New Order", "You have a new order. Order number " + pedidoId);
+
+        //    // Reset session
+        //    Session["carrinho"] = null;
+
+        //}
+
 
     }
 }

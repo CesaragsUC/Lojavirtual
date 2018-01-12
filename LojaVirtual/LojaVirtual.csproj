@@ -158,6 +158,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\PagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ShopController.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModel\Shop\PedidoParaAdminVM.cs" />
     <Compile Include="Controllers\CarrinhoController.cs" />
     <Compile Include="Controllers\ContaController.cs" />
     <Compile Include="Controllers\PaginasController.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="Models\ViewModel\Pages\PaginaVM.cs" />
     <Compile Include="Models\ViewModel\Pages\SidebarVM.cs" />
     <Compile Include="Models\ViewModel\Shop\CategoriaVM.cs" />
+    <Compile Include="Models\ViewModel\Shop\PedidoVM.cs" />
     <Compile Include="Models\ViewModel\Shop\ProdutoVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -529,6 +531,7 @@
     <Content Include="Areas\Admin\Views\Shop\AddProduto.cshtml" />
     <Content Include="Areas\Admin\Views\Shop\Produtos.cshtml" />
     <Content Include="Areas\Admin\Views\Shop\EditarProduto.cshtml" />
+    <Content Include="Areas\Admin\Views\Shop\Pedido.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor.php" />
     <Content Include="Scripts\ckeditor\ckeditor_basic.js" />
@@ -924,7 +927,6 @@
     <Content Include="Views\Carrinho\PaypalPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
     <Folder Include="fileman\tmp\" />

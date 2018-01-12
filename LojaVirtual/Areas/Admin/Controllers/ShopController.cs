@@ -1,4 +1,5 @@
-﻿using LojaVirtual.Models.Data;
+﻿using LojaVirtual.Areas.Admin.Models.ViewModel.Shop;
+using LojaVirtual.Models.Data;
 using LojaVirtual.Models.ViewModel.Shop;
 using PagedList;
 using System;
@@ -497,5 +498,69 @@ namespace LojaVirtual.Areas.Admin.Controllers
             if (System.IO.File.Exists(caminhocompleto2))
                 System.IO.File.Delete(caminhocompleto2);
         }
+
+
+        // GET: Admin/Shop/Orders
+        public ActionResult Pedido()
+        {
+            // Init list of OrdersForAdminVM
+            List<PedidoParaAdminVM> ordersForAdmin = new List<PedidoParaAdminVM>();
+
+            using (Db db = new Db())
+            {
+                // Init list of OrderVM
+                List<PedidoVM> orders = db.Pedido.ToArray().Select(x => new PedidoVM(x)).ToList();
+
+                // Loop through list of OrderVM
+                foreach (var order in orders)
+                {
+                    // Init product dict
+                    Dictionary<string, int> productsAndQty = new Dictionary<string, int>();
+
+                    // Declare total
+                    decimal total = 0m;
+
+                    // Init list of OrderDetailsDTO
+                    List<DetalhePedidoDTO> orderDetailsList = db.PedidoDetalhes.Where(X => X.PedidoId == order.PedidoId).ToList();
+
+                    // Get username
+                    UsuarioDTO user = db.Usuario.Where(x => x.Id == order.UsuarioId).FirstOrDefault();
+                    string username = user.Login;
+
+                    // Loop through list of OrderDetailsDTO
+                    foreach (var orderDetails in orderDetailsList)
+                    {
+                        // Get product
+                        ProdutoDTO product = db.Produto.Where(x => x.Id == orderDetails.ProdutoId).FirstOrDefault();
+
+                        // Get product price
+                        decimal preco = product.Preco;
+
+                        // Get product name
+                        string productName = product.Nome;
+
+                        // Add to product dict
+                        productsAndQty.Add(productName, orderDetails.Quantidade);
+
+                        // Get total
+                        total += orderDetails.Quantidade * preco;
+                    }
+
+                    // Add to ordersForAdminVM list
+                    ordersForAdmin.Add(new PedidoParaAdminVM()
+                    {
+                        NumeroPedido = order.PedidoId,
+                        Login = username,
+                        Total = total,
+                        ProdutoQtd = productsAndQty,
+                        DataCriacao = order.DataCriacao
+                    });
+                }
+            }
+
+            // Return view with OrdersForAdminVM list
+            return View(ordersForAdmin);
+        }
+
     }
 }
