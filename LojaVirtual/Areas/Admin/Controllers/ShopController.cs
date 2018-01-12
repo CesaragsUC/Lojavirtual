@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace LojaVirtual.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ShopController : Controller
     {
         // GET: Admin/Categoria

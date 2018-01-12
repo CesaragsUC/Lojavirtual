@@ -23,6 +23,7 @@
                     @Html.Action("PaginaMenupartial", "Paginas")
                     @if (Request.IsAuthenticated)
                     {
+                      
                         <li><a href="/conta/logout">Sair</a></li>
                     }
                     else
@@ -39,15 +40,18 @@
                     }
                     @if (Request.IsAuthenticated && User.IsInRole("User"))
                     {
-                  
+                        @*<li>@Html.Action("MostraNomeNavPartial", "Conta", new { area = "" })</li>*@
 
-                        if (ViewBag.Title == "Usuario Profile")
+                        if (ViewBag.Title == "Usuario Profile" || ViewBag.Title == "Meus Pedidos")
                         {
                             <li class="active">@Html.Action("UsuarioNavPartial", "Conta", new { area = "" })</li>
+
                         }
                         else
                         {
                             <li>@Html.Action("UsuarioNavPartial", "Conta", new { area = "" })</li>
+                            
+
                         }
 
 
@@ -75,9 +79,36 @@
     <div class="container body-content">
       <div class=" row">
           <div class="ajaxbg"><span><img src="~/Content/img/ajax-loader.gif" /></span></div>
-            <div class=" col-xs-12 col-md-2">
-                @Html.Action("MenuCategoriapartial","Shop")
-            </div>
+
+          @if (ViewBag.Title != "Cria Conta" &&
+                  ViewBag.Title != "Login" &&
+                  ViewBag.Title != "Usuario Profile" &&
+                  ViewBag.Title != "Pedidos"
+                  )
+          {
+              <div class="col-xs-12 col-md-2">
+                  @Html.Action("MenuCategoriapartial", "Shop")
+              </div>
+          }
+
+          @if (ViewBag.Title == "Usuario Profile")
+            {
+              <div class="col-xs-12 col-md-2">
+                  <ul>
+                      <li><a href="/conta/pedido">Meus pedidos</a></li>
+                  </ul>
+              </div>
+          }
+
+          @if (ViewBag.Title == "Pedidos")
+            {
+              <div class="col-xs-12 col-md-2">
+                  <ul>
+                      <li><a href="/conta/usuario-perfil">Minha conta</a></li>
+                  </ul>
+              </div>
+          }
+
             @if (ViewBag.Sidebar == "Yes")
             {
                 <div class="col-xs-12 col-md-7">

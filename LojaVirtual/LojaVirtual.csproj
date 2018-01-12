@@ -177,6 +177,7 @@
     <Compile Include="Models\Data\SidebarDTO.cs" />
     <Compile Include="Models\Data\UsuarioDTO.cs" />
     <Compile Include="Models\ViewModel\Account\LoginUsuarioVM.cs" />
+    <Compile Include="Models\ViewModel\Account\PedidoParausuarioVM.cs" />
     <Compile Include="Models\ViewModel\Account\UsuarioNavPartial.cs" />
     <Compile Include="Models\ViewModel\Account\UsuarioProfileVM.cs" />
     <Compile Include="Models\ViewModel\Account\UsuarioVM.cs" />
@@ -925,6 +926,8 @@
     <Content Include="Views\Conta\UsuarionavPartial.cshtml" />
     <Content Include="Views\Conta\UsuarioProfile.cshtml" />
     <Content Include="Views\Carrinho\PaypalPartial.cshtml" />
+    <Content Include="Views\Conta\Pedido.cshtml" />
+    <Content Include="Views\Conta\MostraNomeNavPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />

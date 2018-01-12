@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace LojaVirtual.Areas.Admin.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class DashboardController : Controller
     {
         // GET: Admin/Dashboard

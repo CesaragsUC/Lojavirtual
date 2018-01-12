@@ -1,5 +1,6 @@
 ﻿using LojaVirtual.Models.Data;
 using LojaVirtual.Models.ViewModel.Account;
+using LojaVirtual.Models.ViewModel.Shop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Web.Security;
 
 namespace LojaVirtual.Controllers
 {
+    
     public class ContaController : Controller
     {
         // GET: Conta
@@ -66,6 +68,7 @@ namespace LojaVirtual.Controllers
 
         [ActionName("cria-conta")]
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult CriaConta()
         {
             return View("CriaConta");
@@ -74,6 +77,7 @@ namespace LojaVirtual.Controllers
 
         [ActionName("cria-conta")]
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult CriaConta(UsuarioVM model)
         {
             if (!ModelState.IsValid)
@@ -131,13 +135,14 @@ namespace LojaVirtual.Controllers
             return Redirect("~/conta/login");
         }
 
-        
+        [Authorize]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             return Redirect("~/conta/login");
         }
 
+        [Authorize]
         public ActionResult UsuarionavPartial()
         {
             // Get username
@@ -163,9 +168,35 @@ namespace LojaVirtual.Controllers
             return PartialView(model);
         }
 
+        [Authorize]
+        public ActionResult MostraNomeNavPartial()
+        {
+            // Get username
+            string username = User.Identity.Name;
+
+            // Declare model
+            UsuarioNavPartial model;
+
+            using (Db db = new Db())
+            {
+                // Get the user
+                UsuarioDTO dto = db.Usuario.FirstOrDefault(x => x.Login == username);
+
+                // Build the model
+                model = new UsuarioNavPartial()
+                {
+                    PrimeiroNome = dto.PrimeiroNome,
+                    Segundonome = dto.SegundoNome
+                };
+            }
+
+            // Return partial view with model
+            return PartialView(model);
+        }
 
         [HttpGet]
         [ActionName("usuario-perfil")]
+        [Authorize]
         public ActionResult UsuarioProfile()
         {
 
@@ -188,6 +219,7 @@ namespace LojaVirtual.Controllers
 
         [HttpPost]
         [ActionName("usuario-perfil")]
+        [Authorize]
         public ActionResult UsuarioProfile(UsuarioProfileVM model)
         {
             if (!ModelState.IsValid)
@@ -234,6 +266,69 @@ namespace LojaVirtual.Controllers
             TempData["SM"] = "Perfil editado com sucesso!";
 
             return Redirect("~/conta/usuario-perfil");
+        }
+
+        // GET: /account/Orders
+        [Authorize(Roles ="User")]
+        public ActionResult Pedido()
+        {
+            // Init list of OrdersForUserVM
+            List<PedidoParausuarioVM> ordersForUser = new List<PedidoParausuarioVM>();
+
+            using (Db db = new Db())
+            {
+                // Get user id
+                UsuarioDTO user = db.Usuario.Where(x => x.Login == User.Identity.Name).FirstOrDefault();
+                int userId = user.Id;
+
+                // Init list of OrderVM
+                List<PedidoVM> orders = db.Pedido.Where(x => x.UsuarioId == userId).ToArray().Select(x => new PedidoVM(x)).ToList();
+
+                // Loop through list of OrderVM
+                foreach (var order in orders)
+                {
+                    // Init products dict
+                    Dictionary<string, int> productsAndQty = new Dictionary<string, int>();
+
+                    // Declare total
+                    decimal total = 0m;
+
+                    // Init list of OrderDetailsDTO
+                    List<DetalhePedidoDTO> orderDetailsDTO = db.PedidoDetalhes.Where(x => x.PedidoId == order.PedidoId).ToList();
+
+                    // Loop though list of OrderDetailsDTO
+                    foreach (var orderDetails in orderDetailsDTO)
+                    {
+                        // Get product
+                        ProdutoDTO product = db.Produto.Where(x => x.Id == orderDetails.ProdutoId).FirstOrDefault();
+
+                        // Get product price
+                        decimal price = product.Preco;
+
+                        // Get product name
+                        string productName = product.Nome;
+
+                        // Add to products dict
+                        productsAndQty.Add(productName, orderDetails.Quantidade);
+
+                        // Get total
+                        total += orderDetails.Quantidade * price;
+                    }
+
+                    // Add to OrdersForUserVM list
+                    ordersForUser.Add(new PedidoParausuarioVM()
+                    {
+                        NumeroPedido = order.PedidoId,
+                        Total = total,
+                        ProdutoQtd = productsAndQty,
+                        DataCriacao = order.DataCriacao
+                    });
+                }
+
+            }
+
+            // Return view with list of OrdersForUserVM
+            return View(ordersForUser);
         }
     }
 }

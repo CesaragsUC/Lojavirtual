@@ -1,0 +1,52 @@
+﻿@model IEnumerable<LojaVirtual.Models.ViewModel.Account.PedidoParausuarioVM>
+
+@{
+    ViewBag.Title = "Pedidos";
+}
+
+<h2>Meus Pedidos</h2>
+
+@if (!Model.Any())
+{
+    <h3>Você não fez nehum pedido.</h3>
+}
+else
+{
+<table class="table">
+    <tr>
+        <th>
+           Pedido
+        </th>
+        <th>Detalhe do pedido</th>
+        <th>
+           Data Pedido
+        </th>
+        <th>
+            Total
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumeroPedido)
+        </td>
+        <td>
+           @foreach (var item2 in item.ProdutoQtd)
+           {
+               @item2.Key @:x @item2.Value <br />
+           }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DataCriacao)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Total)
+        </td>
+    </tr>
+}
+
+</table>
+}
