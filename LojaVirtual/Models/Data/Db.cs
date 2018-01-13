@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
 
@@ -18,6 +19,12 @@ namespace LojaVirtual.Models.Data
         public DbSet<RegraUsuarioDTO> RegraUsuario { get; set; }
         public DbSet<PedidoDTO> Pedido { get; set; }
         public DbSet<DetalhePedidoDTO> PedidoDetalhes { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder) // metodo que retira tipo plural  no nomes das tabelas
+        {
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            base.OnModelCreating(modelBuilder);
+        }
 
         public System.Data.Entity.DbSet<LojaVirtual.Models.ViewModel.Pages.PaginaVM> PaginaVMs { get; set; }
 

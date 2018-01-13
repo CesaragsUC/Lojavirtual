@@ -33,57 +33,57 @@ namespace LojaVirtual.Controllers
         // GET: /shop/category/name
         public ActionResult Categoria(string name)
         {
-            // Declare a list of ProductVM
+            // Declara a lista de ProdutoVM
             List<ProdutoVM> productVMList;
 
             using (Db db = new Db())
             {
-                // Get category id
+                // Get categoria id
                 CategoriaDTO categoryDTO = db.Categoria.Where(x => x.Slug == name).FirstOrDefault();
                 int catId = categoryDTO.Id;
 
-                // Init the list
+                // Inicia a lista
                 productVMList = db.Produto.ToArray().Where(x => x.CategoriaId == catId).Select(x => new ProdutoVM(x)).ToList();
 
             }
 
-            // Return view with list
+            // Return view com lista
             return View(productVMList);
         }
 
         [ActionName("produtos-detalhes")]
         public ActionResult ProdutoDetalhes(string name)
         {
-            // Declare the VM and DTO
+            // Declara a VM e DTO
             ProdutoVM model;
             ProdutoDTO dto;
 
-            // Init product id
+            // Inicia produto id
             int id = 0;
 
             using (Db db = new Db())
             {
-                // Check if product exists
+                // verifica se produto existe
                 if (!db.Produto.Any(x => x.Slug.Equals(name)))
                 {
                     return RedirectToAction("Index", "Shop");
                 }
 
-                // Init productDTO
+                // Inicia produtoDTO
                 dto = db.Produto.Where(x => x.Slug == name).FirstOrDefault();
 
                 // Get id
                 id = dto.Id;
 
-                // Init model
+                // Inicia modelo
                 model = new ProdutoVM(dto);
             }
 
-            // Get gallery images
+            // Get galeria de images
             model.Galeria = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Produto/" + id + "/Gallery/Thumbs"))
                                                 .Select(fn => Path.GetFileName(fn));
 
-            // Return view with model
+            // Return view com modelo
             return View("ProdutoDetalhes", model);
         }
 

@@ -137,7 +137,7 @@ namespace LojaVirtual.Controllers
 
         public ActionResult DecrementaProduto(int produtoId)
         {
-            // Init cart
+            // Inicia carro
             List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
 
             using (Db db = new Db())
@@ -145,7 +145,7 @@ namespace LojaVirtual.Controllers
                 // Get model from list
                 CarrinhoVM model = cart.FirstOrDefault(x => x.ProdutoId == produtoId);
 
-                // Decrement qty
+                // Decrementa quantidade
                 if (model.Quantidade > 1)
                 {
                     model.Quantidade--;
@@ -156,7 +156,7 @@ namespace LojaVirtual.Controllers
                     cart.Remove(model);
                 }
 
-                // Store needed data
+                // DAdos da venda
                 var resultado = new { qtd = model.Quantidade, preco = model.Preco };
 
                 // Return json
@@ -166,15 +166,15 @@ namespace LojaVirtual.Controllers
         }
         public void RemoveProduto(int produtoId)
         {
-            // Init cart list
+            // Inicia lista de carro
             List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
 
             using (Db db = new Db())
             {
-                // Get model from list
+                // pega modelo da lista
                 CarrinhoVM model = cart.FirstOrDefault(x => x.ProdutoId == produtoId);
 
-                // Remove model from list
+                // Remove modelo da lista
                 cart.Remove(model);
             }
 
@@ -187,11 +187,11 @@ namespace LojaVirtual.Controllers
             return PartialView(cart);
         }
 
-        // POST: /Cart/PlaceOrder
+      
         [HttpPost]
         public void PlaceOrder()
         {
-            // Get cart list
+            // pega lista de carro
             List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
 
             // Get username
@@ -201,14 +201,14 @@ namespace LojaVirtual.Controllers
 
             using (Db db = new Db())
             {
-                // Init OrderDTO
+                // Inicia PedidoDTO
                 PedidoDTO orderDTO = new PedidoDTO();
 
                 // Get user id
                 var q = db.Usuario.FirstOrDefault(x => x.Login == username);
                 int userId = q.Id;
 
-                // Add to OrderDTO and save
+                // Add pra PedidoDTO e salva
                 orderDTO.UsuarioId = userId;
                 orderDTO.DataCriacao = DateTime.Now;
 
@@ -216,13 +216,13 @@ namespace LojaVirtual.Controllers
 
                 db.SaveChanges();
 
-                // Get inserted id
+                // Get id inserido
                 orderId = orderDTO.PedidoId;
 
-                // Init OrderDetailsDTO
+                // Init detalhesPedidoDTO
                 DetalhePedidoDTO orderDetailsDTO = new DetalhePedidoDTO();
 
-                // Add to OrderDetailsDTO
+                // Add para detalhesPedidoDTO
                 foreach (var item in cart)
                 {
                     orderDetailsDTO.PedidoId = orderId;
@@ -247,58 +247,6 @@ namespace LojaVirtual.Controllers
               Session["carrinho"] = null;
         }
 
-        //[HttpPost]
-        //public void PlaceOrder()
-        //{
-        //    List<CarrinhoVM> cart = Session["carrinho"] as List<CarrinhoVM>;
-
-        //        string username = User.Identity.Name;
-        //        int pedidoId = 0;
-
-        //        using (Db db = new Db())
-        //        {
-        //            PedidoDTO pedidoDTO = new PedidoDTO();
-
-        //            var q = db.Usuario.FirstOrDefault(x => x.Login == username);
-        //            int usuarioId = q.Id;
-
-
-        //            pedidoDTO.UsuarioId = usuarioId;
-        //            pedidoDTO.DataCriacao = DateTime.Now;
-
-        //            db.Pedido.Add(pedidoDTO);
-
-        //            db.SaveChanges();
-
-        //            pedidoId = pedidoDTO.PedidoId;
-
-
-        //            DetalhePedidoDTO pedidoDetalhesDTO = new DetalhePedidoDTO();
-
-        //            foreach (var item in cart)
-        //            {
-        //                pedidoDetalhesDTO.PedidoId = pedidoId;
-        //                pedidoDetalhesDTO.UsuarioId = usuarioId;
-        //                pedidoDetalhesDTO.ProdutoId = item.ProdutoId;
-        //                pedidoDetalhesDTO.Quantidade = item.Quantidade;
-
-        //                db.PedidoDetalhes.Add(pedidoDetalhesDTO);
-        //                db.SaveChanges();
-
-        //            }
-        //        }
-
-        //    var client = new SmtpClient("smtp-mail.outlook.com", 587)
-        //    {
-        //        Credentials = new NetworkCredential("cesar_ags@outlook.com", "Nvidia770"),
-        //        EnableSsl = true
-        //    };
-        //    client.Send("cesar_ags@outlook.com", "cesar_ags@outlook.com", "New Order", "You have a new order. Order number " + pedidoId);
-
-        //    // Reset session
-        //    Session["carrinho"] = null;
-
-        //}
 
 
     }

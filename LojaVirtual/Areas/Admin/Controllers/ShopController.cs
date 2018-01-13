@@ -61,6 +61,8 @@ namespace LojaVirtual.Areas.Admin.Controllers
             return id;
   
         }
+
+
         public ActionResult DeletaCategoria(int id)
         {
             using (Db db = new Db())
@@ -90,29 +92,29 @@ namespace LojaVirtual.Areas.Admin.Controllers
             return "ok";
         }
 
-        // GET: Admin/Shop/AddProduct
+        // GET: Admin/Shop/Adicionar produto
         [HttpGet]
         public ActionResult AddProduto()
         {
-            // Init model
+            // inicia model
             ProdutoVM model = new ProdutoVM();
 
-            // Add select list of Categoria to model
+            // adiciona a lista de categoria para o modelo
             using (Db db = new Db())
             {
                 model.Categoria = new SelectList(db.Categoria.ToList(), "Id", "Nome");
             }
 
-            // Return view with model
+            // Return view com modelo
             return View(model);
         }
 
-        // POST: Admin/Shop/AddProduct
+        // POST: Admin/Shop/Adicionar produto
         [HttpPost]
 
         public ActionResult AddProduto(ProdutoVM model, HttpPostedFileBase file)
         {
-            // Check model state
+            // Check modelo estado
             if (!ModelState.IsValid)
             {
                 using (Db db = new Db())
@@ -242,7 +244,7 @@ namespace LojaVirtual.Areas.Admin.Controllers
         // GET: Admin/Shop/Produto
         public ActionResult Produtos(int? pagina, int? catId)
         {
-            // Declare a list of ProdutoVM
+            // Declara a lista de ProdutoVM
             List<ProdutoVM> listOfProdutoVM;
 
             // Set page number
@@ -256,46 +258,46 @@ namespace LojaVirtual.Areas.Admin.Controllers
                                   .Select(x => new ProdutoVM(x))
                                   .ToList();
 
-                // Populate Categoria select list
+                // Popula Categoria select list
                 ViewBag.Categoria = new SelectList(db.Categoria.ToList(), "Id", "Nome");
 
                 // Set selected category
                 ViewBag.SelectedCategoria = catId.ToString();
             }
 
-            // Set pagination
+            // Set paginacao
             var onePageOfProduto = listOfProdutoVM.ToPagedList(pageNumber, 3);
             ViewBag.onPaginadeProdutos = onePageOfProduto;
 
-            // Return view with list
+            // Return view com lista
             return View(listOfProdutoVM);
         }
 
-        // GET: Admin/Shop/EditProduct/id
+        // GET: Admin/Shop/editarproduto/id
         [HttpGet]
         public ActionResult Editarproduto(int id)
         {
-            // Declare ProdutoVM
+            // Declara ProdutoVM
             ProdutoVM model;
 
             using (Db db = new Db())
             {
-                // Get the product
+                // ´pega o produto
                 ProdutoDTO dto = db.Produto.Find(id);
 
-                // Make sure product exists
+                //tem certeza que nome produto é unico
                 if (dto == null)
                 {
                     return Content("Esse produtonão existe.");
                 }
 
-                // init model
+                // inicia modelo
                 model = new ProdutoVM(dto);
 
-                // Make a select list
+                // faz um select na lista
                 model.Categoria = new SelectList(db.Categoria.ToList(), "Id", "Nome");
 
-                // Get all gallery images
+                // pega toda galeria de imagem
                 model.Galeria = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Produto/" + id + "/Gallery/Thumbs"))
                                                 .Select(fn => Path.GetFileName(fn));
             }
@@ -304,14 +306,14 @@ namespace LojaVirtual.Areas.Admin.Controllers
             return View(model);
         }
 
-        // POST: Admin/Shop/EditProduct/id
+        // POST: Admin/Shop/editarproduto/id
         [HttpPost]
         public ActionResult Editarproduto(ProdutoVM model, HttpPostedFileBase file)
         {
-            // Get product id
+            // Get produto id
             int id = model.Id;
 
-            // Populate Categoria select list and gallery images
+            // Popula Categoria select lista e galeria images
             using (Db db = new Db())
             {
                 model.Categoria = new SelectList(db.Categoria.ToList(), "Id", "Nome");
@@ -319,13 +321,13 @@ namespace LojaVirtual.Areas.Admin.Controllers
             model.Galeria = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Produto/" + id + "/Gallery/Thumbs"))
                                                 .Select(fn => Path.GetFileName(fn));
 
-            // Check model state
+            // verifica modelo stado
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            // Make sure product name is unique
+            // tem certeza que nome é unico
             using (Db db = new Db())
             {
                 if (db.Produto.Where(x => x.Id != id).Any(x => x.Nome == model.Nome))
@@ -335,7 +337,7 @@ namespace LojaVirtual.Areas.Admin.Controllers
                 }
             }
 
-            // Update product
+            // Update produto
             using (Db db = new Db())
             {
                 ProdutoDTO dto = db.Produto.Find(id);
@@ -358,14 +360,14 @@ namespace LojaVirtual.Areas.Admin.Controllers
 
             #region Image Upload
 
-            // Check for file upload
+            // veriifca por file upload
             if (file != null && file.ContentLength > 0)
             {
 
-                // Get extension
+                // Get extensao
                 string ext = file.ContentType.ToLower();
 
-                // Verify extension
+                // Verica extensao
                 if (ext != "image/jpg" &&
                     ext != "image/jpeg" &&
                     ext != "image/pjpeg" &&
@@ -380,13 +382,13 @@ namespace LojaVirtual.Areas.Admin.Controllers
                     }
                 }
 
-                // Set uplpad directory paths
+                // configura diretorio para o upload
                 var originalDirectory = new DirectoryInfo(string.Format("{0}Images\\Uploads", Server.MapPath(@"\")));
 
                 var pathString1 = Path.Combine(originalDirectory.ToString(), "Produto\\" + id.ToString());
                 var pathString2 = Path.Combine(originalDirectory.ToString(), "Produto\\" + id.ToString() + "\\Thumbs");
 
-                // Delete files from directories
+                //deleta o arquivo do diretorio
 
                 DirectoryInfo di1 = new DirectoryInfo(pathString1);
                 DirectoryInfo di2 = new DirectoryInfo(pathString2);
@@ -397,7 +399,7 @@ namespace LojaVirtual.Areas.Admin.Controllers
                 foreach (FileInfo file3 in di2.GetFiles())
                     file3.Delete();
 
-                // Save image name
+                // Salva imagem nome
 
                 string imageName = file.FileName;
 
@@ -409,7 +411,7 @@ namespace LojaVirtual.Areas.Admin.Controllers
                     db.SaveChanges();
                 }
 
-                // Save original and thumb images
+                // Sala original e miniatura images
 
                 var path = string.Format("{0}\\{1}", pathString1, imageName);
                 var path2 = string.Format("{0}\\{1}", pathString2, imageName);
@@ -423,14 +425,14 @@ namespace LojaVirtual.Areas.Admin.Controllers
 
             #endregion
 
-            // Redirect
+            // Redireciona
             return RedirectToAction("Editarproduto");
         }
 
-        // GET: Admin/Shop/DeleteProduct/id
+        // GET: Admin/Shop/DeletaProduto/id
         public ActionResult DeletarProduto(int id)
         {
-            // Delete product from DB
+            // Deleta produto de DB
             using (Db db = new Db())
             {
                 ProdutoDTO dto = db.Produto.Find(id);
@@ -439,41 +441,41 @@ namespace LojaVirtual.Areas.Admin.Controllers
                 db.SaveChanges();
             }
 
-            // Delete product folder
+            // Deleta produto da pasta
             var originalDirectory = new DirectoryInfo(string.Format("{0}Images\\Uploads", Server.MapPath(@"\")));
             string pathString = Path.Combine(originalDirectory.ToString(), "Produto\\" + id.ToString());
 
             if (Directory.Exists(pathString))
                 Directory.Delete(pathString, true);
 
-            // Redirect
+            // Redireciona
             return RedirectToAction("Produtos");
         }
 
-        // POST: Admin/Shop/SaveGalleryImages
+        // POST: Admin/Shop/SaveGaleriaImages
         [HttpPost]
         public void SaveGalleryImages(int id)
         {
             // Loop through files
             foreach (string fileName in Request.Files)
             {
-                // Init the file
+                // Inicia o file
                 HttpPostedFileBase file = Request.Files[fileName];
 
-                // Check it's not null
+                // verifica se file é nulo
                 if (file != null && file.ContentLength > 0)
                 {
-                    // Set directory paths
+                    // configura um diretorio
                     var originalDirectory = new DirectoryInfo(string.Format("{0}Images\\Uploads", Server.MapPath(@"\")));
 
                     string pathString1 = Path.Combine(originalDirectory.ToString(), "Produto\\" + id.ToString() + "\\Gallery");
                     string pathString2 = Path.Combine(originalDirectory.ToString(), "Produto\\" + id.ToString() + "\\Gallery\\Thumbs");
 
-                    // Set image paths
+                    // configura o caminho da imagem
                     var path = string.Format("{0}\\{1}", pathString1, file.FileName);
                     var path2 = string.Format("{0}\\{1}", pathString2, file.FileName);
 
-                    // Save original and thumb
+                    // salva original e miniatura
 
                     file.SaveAs(path);
                     WebImage img = new WebImage(file.InputStream);
@@ -501,53 +503,53 @@ namespace LojaVirtual.Areas.Admin.Controllers
         }
 
 
-        // GET: Admin/Shop/Orders
+        // GET: Admin/Shop/Pedido
         public ActionResult Pedido()
         {
-            // Init list of OrdersForAdminVM
+            // Inicia lista de pedidoparaadminVM
             List<PedidoParaAdminVM> ordersForAdmin = new List<PedidoParaAdminVM>();
 
             using (Db db = new Db())
             {
-                // Init list of OrderVM
+                // inicia  lista de PedidoVM
                 List<PedidoVM> orders = db.Pedido.ToArray().Select(x => new PedidoVM(x)).ToList();
 
-                // Loop through list of OrderVM
+                // Loop atraves lista de PedidoVM
                 foreach (var order in orders)
                 {
-                    // Init product dict
+                    // Inicia produto dict
                     Dictionary<string, int> productsAndQty = new Dictionary<string, int>();
 
-                    // Declare total
+                    // Declara total
                     decimal total = 0m;
 
-                    // Init list of OrderDetailsDTO
+                    // Inicia lista de detalhespedidoDTO
                     List<DetalhePedidoDTO> orderDetailsList = db.PedidoDetalhes.Where(X => X.PedidoId == order.PedidoId).ToList();
 
-                    // Get username
+                    // Get usuario
                     UsuarioDTO user = db.Usuario.Where(x => x.Id == order.UsuarioId).FirstOrDefault();
                     string username = user.Login;
 
-                    // Loop through list of OrderDetailsDTO
+                    // Loop atraves lista de detalhespedidoDTO
                     foreach (var orderDetails in orderDetailsList)
                     {
-                        // Get product
+                        // Get produto
                         ProdutoDTO product = db.Produto.Where(x => x.Id == orderDetails.ProdutoId).FirstOrDefault();
 
-                        // Get product price
+                        // Get produto preco
                         decimal preco = product.Preco;
 
-                        // Get product name
+                        // pega produto nome
                         string productName = product.Nome;
 
-                        // Add to product dict
+                        // Add to produto dict
                         productsAndQty.Add(productName, orderDetails.Quantidade);
 
-                        // Get total
+                        // pega total
                         total += orderDetails.Quantidade * preco;
                     }
 
-                    // Add to ordersForAdminVM list
+                    // Adiciona parapedidosparaadminVM lista
                     ordersForAdmin.Add(new PedidoParaAdminVM()
                     {
                         NumeroPedido = order.PedidoId,
@@ -559,7 +561,7 @@ namespace LojaVirtual.Areas.Admin.Controllers
                 }
             }
 
-            // Return view with OrdersForAdminVM list
+            // Return view com Pedidospara admin em lista
             return View(ordersForAdmin);
         }
 
